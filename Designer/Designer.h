@@ -279,7 +279,7 @@ namespace MuddledManaged
             }
             
         protected:
-            ScenarioBase (const std::string categoryFullName, const std::string scenarioDescription, bool exceptionExpected)
+            ScenarioBase (const std::string & categoryFullName, const std::string & scenarioDescription, bool exceptionExpected)
             : mCategoryFullName(categoryFullName), mDescription(scenarioDescription), mExceptionExpected(exceptionExpected)
             { }
             
@@ -300,7 +300,7 @@ namespace MuddledManaged
         class Scenario : public ScenarioBase
         {
         public:
-            Scenario (const std::string categoryFullName, const std::string scenarioDescription, bool exceptionExpected)
+            Scenario (const std::string & categoryFullName, const std::string & scenarioDescription, bool exceptionExpected)
             : ScenarioBase(categoryFullName, scenarioDescription, exceptionExpected)
             { }
             
@@ -321,7 +321,7 @@ namespace MuddledManaged
             friend class ScenarioManager;
             
         public:
-            Category (const std::string name)
+            Category (const std::string & name)
             : mName(name)
             {
             }
@@ -426,7 +426,7 @@ namespace MuddledManaged
                 return mTopLevelCategories;
             }
             
-            virtual std::shared_ptr<Category> registerCategory (const std::string categoryFullName)
+            virtual std::shared_ptr<Category> registerCategory (const std::string & categoryFullName)
             {
                 // Skip over initial forward slash characters.
                 std::string::size_type beginPosition = categoryFullName.find_first_not_of("/");
@@ -514,7 +514,7 @@ namespace MuddledManaged
 : public Designer::Scenario<> \
 { \
 public: \
-    INTERNAL_DESIGNER_SCENARIO_CLASS_NAME( preprocGroupName ) (const std::string categoryFullName, const std::string scenarioDescription, bool exceptionExpected) \
+    INTERNAL_DESIGNER_SCENARIO_CLASS_NAME( preprocGroupName ) (const std::string & categoryFullName, const std::string & scenarioDescription, bool exceptionExpected) \
     : Designer::Scenario<>(categoryFullName, scenarioDescription, exceptionExpected) \
     { \
         auto scenarioManager = Designer::ScenarioManager::instance(); \
