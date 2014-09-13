@@ -364,6 +364,7 @@ namespace MuddledManaged
                     category->run(stream);
                 }
                 
+                stream << "---- Running scenarios in: " << name() << std::endl;
                 for (auto & scenario : mChildScenarios)
                 {
                     try
