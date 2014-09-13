@@ -7,7 +7,7 @@
 
 #include <vector>
 
-#include "../Include/Designer.h"
+#include "../Designer/Designer.h"
 
 using namespace MuddledManaged;
 

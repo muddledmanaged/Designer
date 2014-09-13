@@ -7,4 +7,4 @@
 
 #define DESIGNER_GENERATE_MAIN
 #define DESIGNER_GENERATE_GLOBALS
-#include "../Include/Designer.h"
+#include "../Designer/Designer.h"

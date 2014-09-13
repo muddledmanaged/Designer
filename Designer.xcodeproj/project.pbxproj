@@ -50,18 +50,18 @@
 			path = DesignerDesign;
 			sourceTree = "<group>";
 		};
-		3E1FE671199841B700C7C43A /* Include */ = {
+		3E1FE671199841B700C7C43A /* Designer */ = {
 			isa = PBXGroup;
 			children = (
 				3E1FE6721998442000C7C43A /* Designer.h */,
 			);
-			path = Include;
+			path = Designer;
 			sourceTree = "<group>";
 		};
 		3EA7E6C7199730AD00838B4D = {
 			isa = PBXGroup;
 			children = (
-				3E1FE671199841B700C7C43A /* Include */,
+				3E1FE671199841B700C7C43A /* Designer */,
 				3E1FE66919983FF600C7C43A /* DesignerDesign */,
 				3EA7E6D1199730AE00838B4D /* Products */,
 			);
@@ -232,6 +232,7 @@
 				3E1FE66F19983FF600C7C43A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3EA7E6CB199730AD00838B4D /* Build configuration list for PBXProject "Designer" */ = {
 			isa = XCConfigurationList;
