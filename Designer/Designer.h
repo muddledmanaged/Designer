@@ -321,8 +321,8 @@ namespace MuddledManaged
             friend class ScenarioManager;
             
         public:
-            Category (const std::string & name)
-            : mName(name)
+            Category (const std::string & name, const std::string & fullName)
+            : mName(name), mFullName(fullName)
             {
             }
             
@@ -337,7 +337,12 @@ namespace MuddledManaged
             {
                 return mName;
             }
-            
+
+            virtual std::string fullName () const
+            {
+                return mFullName;
+            }
+
             std::vector<std::shared_ptr<Category>> categories ()
             {
                 return mChildCategories;
@@ -364,7 +369,10 @@ namespace MuddledManaged
                     category->run(stream);
                 }
                 
-                stream << "---- Running scenarios in: " << name() << std::endl;
+                if (!mChildScenarios.empty())
+                {
+                    stream << "----- Running scenarios in: " << fullName() << " -----" << std::endl;
+                }
                 for (auto & scenario : mChildScenarios)
                 {
                     try
@@ -395,12 +403,17 @@ namespace MuddledManaged
                         continue;
                     }
                 }
+                if (!mChildScenarios.empty())
+                {
+                    stream << std::endl;
+                }
             }
             
         private:
             Category & operator = (const Category & rhs) = delete;
             
             std::string mName;
+            std::string mFullName;
             // We can use shared_ptr for child stories because there are no cyclic links.
             std::vector<std::shared_ptr<Category>> mChildCategories;
             std::vector<std::shared_ptr<ScenarioBase>> mChildScenarios;
@@ -459,7 +472,7 @@ namespace MuddledManaged
                     auto categoryIter = mAllCategories.find(currentFullName);
                     if (categoryIter == mAllCategories.end())
                     {
-                        std::shared_ptr<Category> newCategory(new Category(currentName));
+                        std::shared_ptr<Category> newCategory(new Category(currentName, categoryFullName));
                         categoryIter = mAllCategories.insert({currentFullName, newCategory}).first;
                         if (previousCategory)
                         {
