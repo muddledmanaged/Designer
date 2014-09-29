@@ -322,12 +322,13 @@ namespace MuddledManaged
             
         public:
             Category (const std::string & name, const std::string & fullName)
-            : mName(name), mFullName(fullName)
+            : mName(name), mFullName(fullName), mPassCount(0), mFailCount(0)
             {
             }
             
             Category (const Category & src)
-            : mName(src.mName), mChildCategories(src.mChildCategories), mChildScenarios(src.mChildScenarios)
+            : mName(src.mName), mChildCategories(src.mChildCategories), mChildScenarios(src.mChildScenarios),
+              mPassCount(src.mPassCount), mFailCount(src.mFailCount)
             { }
             
             virtual ~Category ()
@@ -341,6 +342,16 @@ namespace MuddledManaged
             virtual std::string fullName () const
             {
                 return mFullName;
+            }
+
+            virtual int passCount () const
+            {
+                return mPassCount;
+            }
+
+            virtual int failCount () const
+            {
+                return mFailCount;
             }
 
             std::vector<std::shared_ptr<Category>> categories ()
@@ -364,15 +375,24 @@ namespace MuddledManaged
             
             virtual void run (std::ostream & stream)
             {
+                mPassCount = 0;
+                mFailCount = 0;
+
+                int childCategoryPassCount = 0;
+                int childCategoryFailCount = 0;
                 for (auto & category : mChildCategories)
                 {
                     category->run(stream);
+                    childCategoryPassCount += category->passCount();
+                    childCategoryFailCount += category->failCount();
                 }
                 
                 if (!mChildScenarios.empty())
                 {
                     stream << "----- Running scenarios in: " << fullName() << " -----" << std::endl;
                 }
+                int localPassCount = 0;
+                int localFailCount = 0;
                 for (auto & scenario : mChildScenarios)
                 {
                     try
@@ -380,17 +400,20 @@ namespace MuddledManaged
                         scenario->run();
                         if (scenario->passed())
                         {
+                            localPassCount++;
                             stream << "Scenario passed: " <<
                                 scenario->description() << std::endl;
                         }
                         else
                         {
+                            localFailCount++;
                             stream << "Scenario failed: " <<
                                 scenario->description() << std::endl;
                         }
                     }
                     catch (VerificationException ex)
                     {
+                        localFailCount++;
                         stream << "Scenario failed: " <<
                             scenario->description() << std::endl <<
                             ex.what();
@@ -398,6 +421,7 @@ namespace MuddledManaged
                     }
                     catch (...)
                     {
+                        localFailCount++;
                         stream << "Scenario failed unexpectedly: " <<
                             scenario->description() << std::endl;
                         continue;
@@ -405,8 +429,12 @@ namespace MuddledManaged
                 }
                 if (!mChildScenarios.empty())
                 {
+                    stream << "----- Passed: " << localPassCount << " Failed: " << localFailCount << " -----" << std::endl;
                     stream << std::endl;
                 }
+
+                mPassCount = childCategoryPassCount + localPassCount;
+                mFailCount = childCategoryFailCount + localFailCount;
             }
             
         private:
@@ -414,6 +442,8 @@ namespace MuddledManaged
             
             std::string mName;
             std::string mFullName;
+            int mPassCount;
+            int mFailCount;
             // We can use shared_ptr for child stories because there are no cyclic links.
             std::vector<std::shared_ptr<Category>> mChildCategories;
             std::vector<std::shared_ptr<ScenarioBase>> mChildScenarios;
@@ -494,10 +524,18 @@ namespace MuddledManaged
             
             virtual void run (std::ostream & stream)
             {
+                int passCount = 0;
+                int failCount = 0;
                 for (auto & category : mTopLevelCategories)
                 {
                     category->run(stream);
+                    passCount += category->passCount();
+                    failCount += category->failCount();
                 }
+                stream << "----- Summary -----" << std::endl;
+                stream << "Total number of tests run: " << passCount + failCount << std::endl;
+                stream << "Tests passed: " << passCount << std::endl;
+                stream << "Tests failed: " << failCount << std::endl;
             }
             
         private:
@@ -572,7 +610,6 @@ int main (int argc, const char * argv[])
 {
     int result = Designer::main(argc, argv);
     
-    std::cout << "Completed all scenarios.\n";
     return result;
 }
 
