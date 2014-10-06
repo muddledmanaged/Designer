@@ -110,7 +110,25 @@ namespace MuddledManaged
                 initialize();
             }
 
+            EqualVerificationException (unsigned int expectedValue, unsigned int actualValue)
+            : mExpectedValue(std::to_string(expectedValue)), mActualValue(std::to_string(actualValue))
+            {
+                initialize();
+            }
+
             EqualVerificationException (long expectedValue, long actualValue)
+            : mExpectedValue(std::to_string(expectedValue)), mActualValue(std::to_string(actualValue))
+            {
+                initialize();
+            }
+
+            EqualVerificationException (unsigned long expectedValue, unsigned long actualValue)
+            : mExpectedValue(std::to_string(expectedValue)), mActualValue(std::to_string(actualValue))
+            {
+                initialize();
+            }
+
+            EqualVerificationException (float expectedValue, float actualValue)
             : mExpectedValue(std::to_string(expectedValue)), mActualValue(std::to_string(actualValue))
             {
                 initialize();
@@ -232,7 +250,34 @@ namespace MuddledManaged
                 }
             }
 
+            virtual void verifyEqual (unsigned int expectedValue, unsigned int actualValue)
+            {
+                if (actualValue != expectedValue)
+                {
+                    mRunPassed = false;
+                    throw EqualVerificationException(expectedValue, actualValue);
+                }
+            }
+
             virtual void verifyEqual (long expectedValue, long actualValue)
+            {
+                if (actualValue != expectedValue)
+                {
+                    mRunPassed = false;
+                    throw EqualVerificationException(expectedValue, actualValue);
+                }
+            }
+
+            virtual void verifyEqual (unsigned long expectedValue, unsigned long actualValue)
+            {
+                if (actualValue != expectedValue)
+                {
+                    mRunPassed = false;
+                    throw EqualVerificationException(expectedValue, actualValue);
+                }
+            }
+
+            virtual void verifyEqual (float expectedValue, float actualValue)
             {
                 if (actualValue != expectedValue)
                 {
